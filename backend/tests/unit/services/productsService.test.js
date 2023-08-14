@@ -3,17 +3,20 @@ const sinon = require('sinon');
 const mysql2 = require('mysql2/promise');
 const connection = require('../../../src/models/connection');
 const productService = require('../../../src/services/products.service');
+const productsModel = require('../../../src/models/products.model');
 
 const { expect } = chai;
 const { allProducts, productId1 } = require('../../mocks/productMocks');
 
-describe.only('SERVICES GET /products', function () {
+describe('SERVICES GET /products', function () {
   beforeEach(function () {
     sinon.stub(mysql2, 'createConnection').returns(connection);
   });
   it('testando se a rota "/products" retorna um array', async function () {
     sinon.stub(connection, 'execute')
     .resolves([allProducts]);
+    sinon.stub(productsModel, 'getAll')
+    .resolves(allProducts);
     const response = await productService.getAllProducts();
     expect(response).to.be.an('array');
     expect(response).to.be.deep.equal(allProducts);
@@ -21,6 +24,7 @@ describe.only('SERVICES GET /products', function () {
   it('testando se a rota "/products/1 retorna um objeto', async function () {
     sinon.stub(connection, 'execute')
     .resolves([[productId1]]);
+    sinon.stub(productsModel, 'getById').resolves(productId1);
     const id = 1;
     const response = await productService.getProductById(id);
     expect(response).to.be.an('object');
@@ -29,6 +33,7 @@ describe.only('SERVICES GET /products', function () {
   it('testando se a rota "/products/10" retorna um erro', async function () {
     sinon.stub(connection, 'execute')
     .resolves([[undefined]]);
+    sinon.stub(productsModel, 'getById').resolves(undefined);
     const id = 10;
     const response = await productService.getProductById(id);
     expect(response).to.be.an('object');
