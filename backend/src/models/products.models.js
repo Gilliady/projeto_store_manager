@@ -15,7 +15,17 @@ const getById = async (id) => {
   );
   return camelize(product);
 };
+
+const createProduct = async (name) => {
+  const [{ insertId }] = await connection.execute(
+    'INSERT INTO products (name) VALUES (?)',
+    [name],
+  );
+  return { id: insertId, name };
+};
+
 module.exports = {
   getAll,
   getById,
+  createProduct,
 };

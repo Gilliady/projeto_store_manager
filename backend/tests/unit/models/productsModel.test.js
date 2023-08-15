@@ -26,7 +26,7 @@ describe('Testando as rotas "/products/ e /products/:id"', function () {
     const response = await productModels.getById(1);
     expect(response).to.be.an('object');
     expect(response).to.deep.equal(productId1);
-    const response2 = await productModels.getById(1);
+    const response2 = await productModels.getById(99);
     expect(response2).to.be.equal(undefined);
   });
   afterEach(function () {

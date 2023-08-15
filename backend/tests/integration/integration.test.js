@@ -39,5 +39,4 @@ describe('Teste de Integração"', function () {
   afterEach(function () {
     sinon.restore();
   });
-  sinon.restore();
 });
