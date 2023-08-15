@@ -1,8 +1,11 @@
+// const snakeize = require('snakeize');
+const camelize = require('camelize');
+
 const connection = require('./connection');
 
 const getAll = async () => {
   const [products] = await connection.execute('SELECT * FROM products');
-  return products;
+  return camelize(products);
 };
 
 const getById = async (id) => {
@@ -10,7 +13,7 @@ const getById = async (id) => {
     'SELECT * FROM products WHERE id = ?',  
     [id],
   );
-  return product;
+  return camelize(product);
 };
 module.exports = {
   getAll,
