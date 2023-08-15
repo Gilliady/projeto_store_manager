@@ -41,7 +41,6 @@ describe('Teste unitário do controller Sales', function () {
     expect(response).to.be.deep.equal(salesById);
     response = await salesController.getById({ params: { id: 999 } }, res);
     expect(res.status).to.have.been.calledWith(404);
-    console.log(response);
     expect(response).to.be.deep.equal({ message: 'Sale not found' });
   });
 });
