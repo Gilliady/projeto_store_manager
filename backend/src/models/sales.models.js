@@ -19,7 +19,27 @@ const getById = async (id) => {
   return camelize(sale);
 };
 
+const createSale = async () => {
+  const date = new Date(Date.now()).toISOString().slice(0, 19).replace('T', ' ');
+  const [{ insertId }] = await connection.execute(
+    'INSERT INTO sales (date) VALUES (?)',
+    [date],
+  );
+  return insertId;
+};
+
+const createSaleProduct = async (products, saleId) => {
+  const { productId, quantity } = products;
+  const [{ insertId }] = await connection.execute(
+    'INSERT INTO sales_products (product_id, quantity, sale_id) VALUES (?, ?, ?)',
+    [productId, quantity, saleId],
+  );
+  return camelize(insertId);
+};
+
 module.exports = {
   getAll,
   getById,
+  createSale,
+  createSaleProduct,
 };
