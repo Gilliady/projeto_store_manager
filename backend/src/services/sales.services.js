@@ -12,23 +12,18 @@ const getById = async (id) => {
   return { status: 200, data: sale };
 };
 
-const createSale = async (itensSold) => {
-  const sale = await salesModels.createSale(itensSold);
+const createSale = async (itemsSold) => {
+  const sale = await salesModels.createSale(itemsSold);
   if (!sale) return { status: 500, data: { message: 'Server Error' } };
-  const insertIds = itensSold.map(async (item) => {
-    const insertId = await salesModels.createSaleProduct(item, sale);
-    if (!insertId) return 'error';
-    return insertId;
-  });
-  if (insertIds.some((id) => id === 'error')) {
+  const affectedRows = await salesModels.createSaleProduct(itemsSold, sale);
+  if (affectedRows !== itemsSold.length) {
     return { 
     status: 500,
     data: { message: 'Server Error' },
     };
   }
-  return {
-    status: 201,
-    data: { id: sale, itemsSold: itensSold.map((item) => ({ ...item })),
+  return { status: 201,
+    data: { id: sale, itemsSold: itemsSold.map((item) => ({ ...item })),
     },
   };
 };

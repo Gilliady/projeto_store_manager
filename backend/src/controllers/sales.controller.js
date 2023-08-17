@@ -16,6 +16,7 @@ const createSale = async (req, res) => {
   const { status, data } = await salesServices.createSale(body);
   return res.status(status).json(data);
 };
+
 module.exports = {
   getAll,
   getById,

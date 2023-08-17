@@ -1,4 +1,5 @@
 const camelize = require('camelize');
+const snakeize = require('snakeize');
 const connection = require('./connection');
 
 const getAll = async () => {
@@ -29,13 +30,36 @@ const createSale = async () => {
 };
 
 const createSaleProduct = async (products, saleId) => {
-  const { productId, quantity } = products;
-  const [{ insertId }] = await connection.execute(
-    'INSERT INTO sales_products (product_id, quantity, sale_id) VALUES (?, ?, ?)',
-    [productId, quantity, saleId],
+  const keysArray = `(${Object.keys(snakeize(products[0])).join(', ')}, sale_id)`;
+  const interrogationsArray = products
+    .map((product) => `(${Object.values(product).map(() => '?').join(', ')}, ?)`);
+    const valuesArray = products.map((product) => [...Object.values(product), saleId]);
+  const [{ affectedRows }] = await connection.execute(
+    `INSERT INTO sales_products ${keysArray} VALUES ${interrogationsArray}`,
+    [].concat(...valuesArray),
   );
-  return camelize(insertId);
+  return camelize(affectedRows);
 };
+
+/* const createSaleProduct = async (products, saleId) => {
+  const keysArray = `(${Object.keys(snakeize(products[0])).join(', ')}, sale_id)`;
+  const interrogationsArray = products
+    .map((product) => `(${Object.values(product).map(() => '?').join(', ')}, ?)`);
+  const valuesArray = products.map((product) => [...Object.values(product), saleId]);
+
+  try {
+    const [result] = await connection.execute(
+      `INSERT INTO sales_products ${keysArray} VALUES ${interrogationsArray.join(', ')}`,
+      [].concat(...valuesArray),
+    );
+    
+    console.log(result);
+    return camelize(result);
+  } catch (error) {
+    console.error("Erro na inserção:", error);
+    throw error;
+  }
+}; */
 
 module.exports = {
   getAll,

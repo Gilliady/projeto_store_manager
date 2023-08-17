@@ -1,3 +1,4 @@
+const { productModels } = require('../models');
 const nameSchema = require('../utils/nameSchema');
 
 const validateName = (req, res, next) => {
@@ -11,6 +12,16 @@ const validateName = (req, res, next) => {
   return next();
 };
 
+const validateProductExistence = async (req, res, next) => {
+  const { params: { id } } = req;
+  const product = await productModels.getById(id);
+  if (!product) {
+    return res.status(404).json({ message: 'Product not found' });
+  }
+  next();
+};
+
 module.exports = [
   validateName,
+  validateProductExistence,
 ];
