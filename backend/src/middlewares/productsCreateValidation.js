@@ -21,7 +21,7 @@ const validateProductExistence = async (req, res, next) => {
   next();
 };
 
-module.exports = [
+module.exports = {
   validateName,
   validateProductExistence,
-];
+};
