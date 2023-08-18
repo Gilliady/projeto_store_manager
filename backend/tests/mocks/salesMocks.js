@@ -1,4 +1,7 @@
+const { productToInsert } = require('./productMocks');
+
 const date = '2023-08-15T18:05:35.000Z';
+
 const allSales = [
   {
     saleId: 1,
@@ -33,7 +36,13 @@ const salesById = [
   },
 ];
 
+const newSaleMock = {
+  id: 1,
+  itemsSold: productToInsert,
+};
+
 module.exports = {
   allSales,
   salesById,
+  newSaleMock,
 };

@@ -6,6 +6,8 @@ const { validateName,
 const productsRouter = express.Router();
 productsRouter.get('/', productsController.getAll);
 
+productsRouter.post('/', validateName, productsController.createProduct);
+
 productsRouter.get('/:id', productsController.getById);
 
 productsRouter.put(
@@ -16,7 +18,5 @@ productsRouter.put(
 );
 
 productsRouter.delete('/:id', validateProductExistence, productsController.deleteProduct);
-
-productsRouter.post('/', validateName, productsController.createProduct);
 
 module.exports = productsRouter;

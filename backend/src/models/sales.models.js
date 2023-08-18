@@ -1,6 +1,7 @@
 const camelize = require('camelize');
 const snakeize = require('snakeize');
 const connection = require('./connection');
+const generateDate = require('../utils/generateDate');
 
 const getAll = async () => {
   const [sales] = await connection.execute(
@@ -21,7 +22,7 @@ const getById = async (id) => {
 };
 
 const createSale = async () => {
-  const date = new Date(Date.now()).toISOString().slice(0, 19).replace('T', ' ');
+  const date = generateDate();
   const [{ insertId }] = await connection.execute(
     'INSERT INTO sales (date) VALUES (?)',
     [date],
@@ -40,26 +41,6 @@ const createSaleProduct = async (products, saleId) => {
   );
   return camelize(affectedRows);
 };
-
-/* const createSaleProduct = async (products, saleId) => {
-  const keysArray = `(${Object.keys(snakeize(products[0])).join(', ')}, sale_id)`;
-  const interrogationsArray = products
-    .map((product) => `(${Object.values(product).map(() => '?').join(', ')}, ?)`);
-  const valuesArray = products.map((product) => [...Object.values(product), saleId]);
-
-  try {
-    const [result] = await connection.execute(
-      `INSERT INTO sales_products ${keysArray} VALUES ${interrogationsArray.join(', ')}`,
-      [].concat(...valuesArray),
-    );
-    
-    console.log(result);
-    return camelize(result);
-  } catch (error) {
-    console.error("Erro na inserção:", error);
-    throw error;
-  }
-}; */
 
 module.exports = {
   getAll,

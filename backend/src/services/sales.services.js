@@ -2,7 +2,6 @@ const { salesModels } = require('../models');
 
 const getAll = async () => {
   const sales = await salesModels.getAll();
-  if (!sales) return { status: 500, data: { message: 'Server Error' } };
   return { status: 200, data: sales };
 };
 

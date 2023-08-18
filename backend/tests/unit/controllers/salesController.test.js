@@ -7,11 +7,11 @@ const { allSales, salesById } = require('../../mocks/salesMocks');
 
 chai.use(sinonChai);
 const { expect } = chai;
-describe('Teste unitário do controller Sales', function () {
+describe('<SalesController>', function () {
   afterEach(function () {
-    sinon.reset();
+    sinon.restore();
   });
-  it('Testa getAllSales Controller', async function () {
+  it('<SalesController> getAll', async function () {
     const res = {
       status: sinon.stub().returnsThis(),
       json: sinon.stub().returns(allSales),
@@ -22,7 +22,7 @@ describe('Teste unitário do controller Sales', function () {
     expect(res.status).to.have.been.calledWith(200);
     expect(response).to.be.deep.equal(allSales);
   });
-  it('Testa getByIdSales Controller', async function () {
+  it('<SalesController> getById', async function () {
     const res = {
       status: sinon.stub().returnsThis(),
       json: sinon.stub()
@@ -42,5 +42,29 @@ describe('Teste unitário do controller Sales', function () {
     response = await salesController.getById({ params: { id: 999 } }, res);
     expect(res.status).to.have.been.calledWith(404);
     expect(response).to.be.deep.equal({ message: 'Sale not found' });
+  });
+
+  it('<SalesController> createSale', async function () {
+    const req = {
+      body: [
+        {
+          productId: 1,
+          quantity: 5,
+        },
+        {
+          productId: 2,
+          quantity: 10,
+        },
+      ],
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub().returns({ id: 1, itemsSold: req.body }),
+    };
+    sinon.stub(salesServices, 'createSale')
+      .resolves({ status: 201, data: { id: 1, itemsSold: req.body } });
+    const response = await salesController.createSale(req, res);
+    expect(res.status).to.have.been.calledWith(201);
+    expect(response).to.be.deep.equal({ id: 1, itemsSold: req.body });
   });
 });
